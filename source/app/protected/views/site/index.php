@@ -4,4 +4,4 @@
     $this->pageTitle = Yii::app ()->name;
 ?>
 
-<?= TbHtml::heroUnit (CHtml::encode (Yii::app ()->name), 'Система тикетов'); ?>
+<?= TbHtml::heroUnit (CHtml::encode (Yii::app ()->name), 'Простая система тикетов на Yii Framework 1.1'); ?>
