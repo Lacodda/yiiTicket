@@ -1,0 +1,66 @@
+version: '2'
+
+services:
+
+### Nginx Server Container ##################################
+    nginx:
+        restart: always
+        build:
+            context: ./nginx
+            args:
+                - PHP_UPSTREAM=php-fpm
+        volumes_from:
+            - volumes_source
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
+        links:
+            - php-fpm
+        environment:
+            - VIRTUAL_HOST=yiiticket.dev
+
+### PHP-FPM Container #######################################
+
+    php-fpm:
+        restart: always
+        build:
+            context: ./php-fpm
+            args:
+                - INSTALL_XDEBUG=false
+                - INSTALL_MONGO=false
+                - INSTALL_ZIP_ARCHIVE=true
+                - INSTALL_MEMCACHED=false
+                - INSTALL_OPCACHE=true
+                - GITHUB_TOKEN=false
+            dockerfile: Dockerfile-56
+        volumes_from:
+            - volumes_source
+        expose:
+            - "9000"
+
+### MySQL Container #########################################
+
+    mysql:
+        restart: always
+        build: ./mysql
+        volumes:
+            - ../db/mysql:/var/lib/mysql
+            - ../db/backup:/var/www/backup
+        environment:
+            MYSQL_DATABASE: site
+            MYSQL_USER: site
+            MYSQL_PASSWORD: site
+            MYSQL_ROOT_PASSWORD: root
+        expose:
+            - "3306"
+
+### Application Code Container ##############################
+
+    volumes_source:
+        build: ./volumes/application
+        volumes:
+            - ../source/:/var/www/site
+
+networks:
+    default:
+        external:
+            name: nginx-proxy
