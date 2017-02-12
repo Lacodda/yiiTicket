@@ -16,7 +16,7 @@ services:
         links:
             - php-fpm
         environment:
-            - VIRTUAL_HOST=yiiticket.dev
+            - VIRTUAL_HOST=yiiticket.dev, yiiticket.lacodda.com
 
 ### PHP-FPM Container #######################################
 
